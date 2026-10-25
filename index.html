@@ -1,1 +1,204 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Hub | Games</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #090d1a;
+      color: #f4f6ff;
+    }
+    header {
+      padding: 28px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #18265a, #521b76);
+      border-bottom: 1px solid #343b6b;
+    }
+    h1 { margin: 0 0 8px; font-size: 36px; }
+    header p { color: #c8d0ff; margin: 0; }
+    main { max-width: 1000px; margin: auto; padding: 24px 16px; }
+    #search {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #39456c;
+      background: #131a2d;
+      color: white;
+      font-size: 16px;
+      margin-bottom: 24px;
+      outline: none;
+    }
+    #search:focus { border-color: #9b7bff; }
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .filters button {
+      background: #19223b;
+      border: 1px solid #354267;
+      color: white;
+      padding: 9px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+    .filters button.active, .filters button:hover {
+      background: #6744d9;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 16px;
+    }
+    .game {
+      background: #121a2d;
+      border: 1px solid #263351;
+      border-radius: 15px;
+      overflow: hidden;
+      transition: transform .15s, border-color .15s;
+    }
+    .game:hover {
+      transform: translateY(-4px);
+      border-color: #9475ff;
+    }
+    .cover {
+      min-height: 115px;
+      display: grid;
+      place-items: center;
+      font-size: 48px;
+      background: linear-gradient(135deg, #202f60, #51285e);
+    }
+    .info { padding: 14px; }
+    .info h3 { margin: 0 0 7px; }
+    .info p { color: #aeb9d6; font-size: 13px; min-height: 30px; }
+    .play {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background: #6744d9;
+      color: white;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .play:hover { background: #805fff; }
+    #empty { display: none; color: #b7c0d9; padding: 20px 0; }
+    footer { text-align: center; color: #8f9bb8; padding: 30px 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌌 Nova Hub</h1>
+    <p>Your corner of the universe for games.</p>
+  </header>
+
+  <main>
+    <input id="search" type="search"
+      placeholder="🔎 Search games..."
+      aria-label="Search games">
+
+    <div class="filters">
+      <button class="active" data-category="All">All</button>
+      <button data-category="Arcade">Arcade</button>
+      <button data-category="Puzzle">Puzzle</button>
+      <button data-category="Action">Action</button>
+    </div>
+
+    <div class="grid" id="games">
+      <article class="game" data-category="Arcade">
+        <div class="cover">🏃</div>
+        <div class="info">
+          <h3>Run 3</h3>
+          <p>Run and jump through space tunnels.</p>
+          <a class="play" href="https://www.coolmathgames.com/0-run-3"
+             target="_blank" rel="noopener noreferrer">Play Game ↗</a>
+        </div>
+      </article>
+
+      <article class="game" data-category="Puzzle">
+        <div class="cover">🧩</div>
+        <div class="info">
+          <h3>2048</h3>
+          <p>Combine matching tiles to reach 2048.</p>
+          <a class="play" href="https://play2048.co/"
+             target="_blank" rel="noopener noreferrer">Play Game ↗</a>
+        </div>
+      </article>
+
+      <article class="game" data-category="Arcade">
+        <div class="cover">🐍</div>
+        <div class="info">
+          <h3>Google Snake</h3>
+          <p>Guide the snake and collect food.</p>
+          <a class="play" href="https://www.google.com/fbx?fbx=snake_arcade"
+             target="_blank" rel="noopener noreferrer">Play Game ↗</a>
+        </div>
+      </article>
+
+      <article class="game" data-category="Puzzle">
+        <div class="cover">♟️</div>
+        <div class="info">
+          <h3>Chess</h3>
+          <p>Challenge yourself with a game of chess.</p>
+          <a class="play" href="https://lichess.org/"
+             target="_blank" rel="noopener noreferrer">Play Game ↗</a>
+        </div>
+      </article>
+
+      <article class="game" data-category="Action">
+        <div class="cover">🚀</div>
+        <div class="info">
+          <h3>More Games</h3>
+          <p>Explore a collection of browser games.</p>
+          <a class="play" href="https://itch.io/games/html5"
+             target="_blank" rel="noopener noreferrer">Explore ↗</a>
+        </div>
+      </article>
+    </div>
+
+    <p id="empty">No games found. Try another search!</p>
+  </main>
+
+  <footer>Nova Hub · Made for fun ✨</footer>
+
+  <script>
+    const search = document.getElementById('search');
+    const cards = [...document.querySelectorAll('.game')];
+    const buttons = [...document.querySelectorAll('.filters button')];
+    const empty = document.getElementById('empty');
+    let category = 'All';
+
+    function filterGames() {
+      const query = search.value.toLowerCase().trim();
+      let visible = 0;
+
+      cards.forEach(card => {
+        const matchesText = card.innerText.toLowerCase().includes(query);
+        const matchesCategory =
+          category === 'All' || card.dataset.category === category;
+        const show = matchesText && matchesCategory;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+
+      empty.style.display = visible ? 'none' : 'block';
+    }
+
+    search.addEventListener('input', filterGames);
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        category = button.dataset.category;
+        buttons.forEach(b => b.classList.toggle('active', b === button));
+        filterGames();
+      });
+    });
+  </script>
+</body>
+</html>
